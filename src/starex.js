@@ -2,6 +2,7 @@ const config = require("../config.json");
 const { firestore, firebase } = require('./firebase');
 const { doc, setDoc, getDocs, collection, query, where } = require('firebase/firestore');
 const { nanoid } = require('nanoid'); 
+const { MessageActionRow, MessageButton } = require("discord.js");
 
 module.exports.sendTransaction = async function sendTransaction(client, message, sender, reciever, quantity) {
     
@@ -20,5 +21,18 @@ module.exports.sendTransaction = async function sendTransaction(client, message,
     });
     
     const channel = client.channels.cache.get(config.bot.starex_channel_id);
-    channel.send(`**${sender.username}** awarded **${reciever.username}** a ⭐. \n*(Transaction ID: ${transactionId})*`);
+    //channel.send();
+
+    const row = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setLabel('View Message')
+                .setStyle('LINK')
+                .setURL(message.url),
+        );
+
+    channel.send({
+        content: `**${sender.username}** awarded **${reciever.username}** a ⭐. \n*(Transaction ID: ${transactionId})*`,
+        components: [row]
+    });
 }
